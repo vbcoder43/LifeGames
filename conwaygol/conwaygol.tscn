@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dljy7es03il3r"]
+
+[ext_resource type="Script" path="res://conwaygol/conwaygol.gd" id="1_uh548"]
+
+[node name="conwaygol" type="Node2D"]
+script = ExtResource("1_uh548")
