@@ -13,7 +13,7 @@ layout(set = 0, binding = 0, rgba32f) uniform image2D OUTPUT_TEXTURE;
 
 void main() {
 	int neighbors = 0;
-	ivec2 texel = ivec2(gl_GlobalInvocationID.xy);
+	ivec2 texel = ivec2(gl_GlobalInvocationID.x,gl_GlobalInvocationID.y);
 	// boundary warp doesnt work with single output buffer for some reason, no clue why -_-
 	// int nx = int(gl_GlobalInvocationID.x + params.grid_size);
 	// int ny = int(gl_GlobalInvocationID.y + params.grid_size);
@@ -28,6 +28,7 @@ void main() {
 	// 	imageLoad(OUTPUT_TEXTURE, ivec2((nx + 1)% int(params.grid_size), (ny + 1)% int(params.grid_size))).r
 	// };
 	// no warping
+
 	float neighbors_arr[8] = {
 		imageLoad(OUTPUT_TEXTURE, ivec2(gl_GlobalInvocationID.x - 1, gl_GlobalInvocationID.y - 1)).r,
 		imageLoad(OUTPUT_TEXTURE, ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y - 1)).r,
@@ -52,8 +53,9 @@ void main() {
 	// 		vec4 col = imageLoad(INPUT_TEXTURE, dtexel);
 	// 		neighbors += int(round(col.r));
 	// 	}
-	// } 
-	if(color.r > 0.5) color.rgb = (neighbors==2 || neighbors==3) ? vec3(1.0, neighbors/4.0, neighbors/4.0) : vec3(0.0, neighbors/4.0, neighbors/4.0);
-	else color.rgb = (neighbors==3) ? vec3(1.0, neighbors/4.0, neighbors/4.0) : vec3(0.0, neighbors/4.0, neighbors/4.0);
+	// }
+	
+	if(color.r > 0.5) color.rgb = (neighbors==2 || neighbors==3) ? vec3(1.0, gl_GlobalInvocationID.x/1024.0, gl_GlobalInvocationID.y/1024.0) : vec3(0.0);
+	else color.rgb = (neighbors==3) ? vec3(1.0, gl_GlobalInvocationID.x/1024.0, gl_GlobalInvocationID.y/1024.0) : vec3(0.0);
 	imageStore(OUTPUT_TEXTURE, texel, color);
 }

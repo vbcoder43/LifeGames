@@ -93,5 +93,5 @@ func update_rd():
 #fixed the need for 2 buffers (input_texture)
 #now we read and then write to same output buffer thanks to lowering invocations
 #(it fails to show correct picture with 32 and single buffer to read then write to)
-#and using barriers in glsl
+#and using barriers in glsl, barriers only work in a workgroup, not between them.
 #also boundary warp doesnt work with single output texture, no clue why
