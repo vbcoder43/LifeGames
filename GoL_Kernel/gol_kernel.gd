@@ -27,7 +27,7 @@ func _ready():
 	
 func _process(delta):
 	DisplayServer.window_set_title(str(delta*1000.0)+" ms, "+str(1/delta)+" fps")
-	$UI/lblFPS.text = "FPS: "+str(Engine.get_frames_per_second())+" |||| "+str(delta*1000)+" ms"
+	$UI/lblFPS.text = "FPS: "+str(Engine.get_frames_per_second())+" |||| "+str(1/Engine.get_frames_per_second()*1000)+" ms"
 	if Input.is_action_just_pressed("ui_accept"):
 		paused = false
 	if Input.is_action_just_pressed("ui_cancel"):
@@ -93,9 +93,9 @@ func process_rd():
 
 func update_rd():
 	push_constants = PackedFloat32Array([store_on_texture1, SIZE, 0.0, 0.0])
-
+	
 func init_kernel():
-	kernel_data = PackedFloat32Array([
+	kernel_data = PackedFloat32Array([ #default GoL kernel
 	1.0, 1.0, 1.0,
 	1.0, 0.0, 1.0,
 	1.0, 1.0, 1.0

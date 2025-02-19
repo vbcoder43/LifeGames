@@ -17,9 +17,7 @@ layout(push_constant, std430) uniform _params {
 	vec2 reserved1;
 } params;
 
-float growth(float current_cell) {
-	return 0.0;
-}
+float growth(float val);
 
 void main() {
 	float sum = 0;
@@ -37,8 +35,17 @@ void main() {
 	ivec2 texel = ivec2(gl_GlobalInvocationID.xy);
 	vec4 color = imageLoad(texture1, texel);
 	if(bool(params.store_on_texture1)) color = imageLoad(texture0, texel);
-	if(color.r >= 0.5) color.rgb = (sum>=2 && sum<=3) ? vec3(1.0, gl_GlobalInvocationID.x/1024.0, gl_GlobalInvocationID.y/1024.0) : vec3(0.0);
-	else color.rgb = (sum>=2.9 && sum<=3.1) ? vec3(1.0, gl_GlobalInvocationID.x/1024.0, gl_GlobalInvocationID.y/1024.0) : vec3(0.0);
+	// default conditionals
+	// if(color.r >= 0.5) color.rgb = (sum>=2 && sum<=3) ? vec3(1.0, gl_GlobalInvocationID.x/params.grid_size, gl_GlobalInvocationID.y/params.grid_size) : vec3(0.0);
+	// else color.rgb = (sum>=2.9 && sum<=3.1) ? vec3(1.0, gl_GlobalInvocationID.x/params.grid_size, gl_GlobalInvocationID.y/params.grid_size) : vec3(0.0);
+	// growth based simulation
+	color.rgb = vec3(clamp(color.r + growth(sum), 0.0, 1.0),
+					clamp(growth(sum) * (gl_GlobalInvocationID.x/params.grid_size), 0.0, 1.0),
+					clamp(growth(sum) * (gl_GlobalInvocationID.y/params.grid_size), 0.0, 1.0));
 	if(bool(params.store_on_texture1)) imageStore(texture1, texel, color);
 	else imageStore(texture0, texel, color);
+}
+
+float growth(float val) {
+	return float(val>=2.9 && val<=3.1) - float(val<2.0 || val>3.0);
 }
