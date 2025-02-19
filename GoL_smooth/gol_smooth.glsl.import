@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://dyt8ow8y2pbon"
+path="res://.godot/imported/gol_smooth.glsl-05257488fc185a36fb3af58ba0aca678.res"
+
+[deps]
+
+source_file="res://GoL_smooth/gol_smooth.glsl"
+dest_files=["res://.godot/imported/gol_smooth.glsl-05257488fc185a36fb3af58ba0aca678.res"]
+
+[params]
+

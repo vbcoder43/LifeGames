@@ -14,13 +14,19 @@ layout(set = 0, binding = 2, std430) restrict buffer _kernel {
 layout(push_constant, std430) uniform _params {
 	float store_on_texture1;
 	float grid_size;
-	vec2 reserved1;
+	float frequency;
+	float l1;
+	float l2;
+	float l3;
+	float l4;
+	float reserved;
 } params;
 
 float growth(float val);
 
 void main() {
-	float sum = 0;
+	float sum = 0.0;
+	float kernel_sum = 0.0;
 	for (int x = 0; x < int(kernel.size); ++x) {
 		for (int y = 0; y < int(kernel.size); ++y) {
 			int i = x * int(kernel.size) + y;
@@ -29,17 +35,16 @@ void main() {
 			int ny = int(gl_GlobalInvocationID.y - (kernel.size/2) + y + params.grid_size) % int(params.grid_size);
 			vec4 temp_col = imageLoad(texture1, ivec2(nx, ny));
 			if(bool(params.store_on_texture1)) temp_col = imageLoad(texture0, ivec2(nx, ny));
+			kernel_sum += kernel.array[i];
 			sum += temp_col.r * kernel.array[i];
 		}
 	}
+	sum /= kernel_sum;
 	ivec2 texel = ivec2(gl_GlobalInvocationID.xy);
 	vec4 color = imageLoad(texture1, texel);
 	if(bool(params.store_on_texture1)) color = imageLoad(texture0, texel);
-	// default conditionals
-	// if(color.r >= 0.5) color.rgb = (sum>=2 && sum<=3) ? vec3(1.0, gl_GlobalInvocationID.x/params.grid_size, gl_GlobalInvocationID.y/params.grid_size) : vec3(0.0);
-	// else color.rgb = (sum>=2.9 && sum<=3.1) ? vec3(1.0, gl_GlobalInvocationID.x/params.grid_size, gl_GlobalInvocationID.y/params.grid_size) : vec3(0.0);
 	// growth based simulation
-	color.rgb = vec3(clamp(color.r + growth(sum), 0.0, 1.0),
+	color.rgb = vec3(clamp(color.r + (growth(sum) * params.frequency), 0.0, 1.0),
 					clamp(growth(sum) * (gl_GlobalInvocationID.x/params.grid_size), 0.0, 1.0),
 					clamp(growth(sum) * (gl_GlobalInvocationID.y/params.grid_size), 0.0, 1.0));
 	if(bool(params.store_on_texture1)) imageStore(texture1, texel, color);
@@ -48,5 +53,7 @@ void main() {
 
 float growth(float val) {
 	// default GoL states, binary.
-	return float(val>=2.9 && val<=3.1) - float(val<2.0 || val>3.0);
+	// return float(val>=2.9 && val<=3.1) - float(val<2.0 || val>3.0);
+	
+	return float(val>=params.l1 && val<=params.l2) - float(val<=params.l3 || val>=params.l4);
 }
