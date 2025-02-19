@@ -18,7 +18,7 @@ var test_pattern_1024 : Texture2D = load("res://goltest1024.png")
 var test_pattern_512 : Texture2D = load("res://goltest512.png")
 
 var start := false
-var use_noise := true
+var use_noise := false
 
 func _ready():
 	init_rd()

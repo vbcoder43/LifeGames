@@ -15,30 +15,30 @@ void main() {
 	int neighbors = 0;
 	ivec2 texel = ivec2(gl_GlobalInvocationID.x,gl_GlobalInvocationID.y);
 	// boundary warp doesnt work with single output buffer for some reason, no clue why -_-
-	// int nx = int(gl_GlobalInvocationID.x + params.grid_size);
-	// int ny = int(gl_GlobalInvocationID.y + params.grid_size);
-	// float neighbors_arr[8] = {
-	// 	imageLoad(OUTPUT_TEXTURE, ivec2((nx - 1)% int(params.grid_size), (ny - 1)% int(params.grid_size))).r,
-	// 	imageLoad(OUTPUT_TEXTURE, ivec2(nx % int(params.grid_size), (ny - 1)% int(params.grid_size))).r,
-	// 	imageLoad(OUTPUT_TEXTURE, ivec2((nx + 1)% int(params.grid_size), (ny - 1)% int(params.grid_size))).r,
-	// 	imageLoad(OUTPUT_TEXTURE, ivec2((nx - 1)% int(params.grid_size), ny% int(params.grid_size))).r,
-	// 	imageLoad(OUTPUT_TEXTURE, ivec2((nx + 1)% int(params.grid_size), ny% int(params.grid_size))).r,
-	// 	imageLoad(OUTPUT_TEXTURE, ivec2((nx - 1)% int(params.grid_size), (ny + 1)% int(params.grid_size))).r,
-	// 	imageLoad(OUTPUT_TEXTURE, ivec2(nx % int(params.grid_size) , (ny + 1)% int(params.grid_size))).r,
-	// 	imageLoad(OUTPUT_TEXTURE, ivec2((nx + 1)% int(params.grid_size), (ny + 1)% int(params.grid_size))).r
-	// };
+	int nx = int(gl_GlobalInvocationID.x + params.grid_size);
+	int ny = int(gl_GlobalInvocationID.y + params.grid_size);
+	float neighbors_arr[8] = {
+		imageLoad(OUTPUT_TEXTURE, ivec2((nx - 1)% int(params.grid_size), (ny - 1)% int(params.grid_size))).r,
+		imageLoad(OUTPUT_TEXTURE, ivec2(nx % int(params.grid_size), (ny - 1)% int(params.grid_size))).r,
+		imageLoad(OUTPUT_TEXTURE, ivec2((nx + 1)% int(params.grid_size), (ny - 1)% int(params.grid_size))).r,
+		imageLoad(OUTPUT_TEXTURE, ivec2((nx - 1)% int(params.grid_size), ny% int(params.grid_size))).r,
+		imageLoad(OUTPUT_TEXTURE, ivec2((nx + 1)% int(params.grid_size), ny% int(params.grid_size))).r,
+		imageLoad(OUTPUT_TEXTURE, ivec2((nx - 1)% int(params.grid_size), (ny + 1)% int(params.grid_size))).r,
+		imageLoad(OUTPUT_TEXTURE, ivec2(nx % int(params.grid_size) , (ny + 1)% int(params.grid_size))).r,
+		imageLoad(OUTPUT_TEXTURE, ivec2((nx + 1)% int(params.grid_size), (ny + 1)% int(params.grid_size))).r
+	};
 	// no warping
 
-	float neighbors_arr[8] = {
-		imageLoad(OUTPUT_TEXTURE, ivec2(gl_GlobalInvocationID.x - 1, gl_GlobalInvocationID.y - 1)).r,
-		imageLoad(OUTPUT_TEXTURE, ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y - 1)).r,
-		imageLoad(OUTPUT_TEXTURE, ivec2(gl_GlobalInvocationID.x + 1, gl_GlobalInvocationID.y - 1)).r,
-		imageLoad(OUTPUT_TEXTURE, ivec2(gl_GlobalInvocationID.x - 1, gl_GlobalInvocationID.y)).r,
-		imageLoad(OUTPUT_TEXTURE, ivec2(gl_GlobalInvocationID.x + 1, gl_GlobalInvocationID.y)).r,
-		imageLoad(OUTPUT_TEXTURE, ivec2(gl_GlobalInvocationID.x - 1, gl_GlobalInvocationID.y + 1)).r,
-		imageLoad(OUTPUT_TEXTURE, ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y + 1)).r,
-		imageLoad(OUTPUT_TEXTURE, ivec2(gl_GlobalInvocationID.x + 1, gl_GlobalInvocationID.y + 1)).r
-	};
+	// float neighbors_arr[8] = {
+	// 	imageLoad(OUTPUT_TEXTURE, ivec2(gl_GlobalInvocationID.x - 1, gl_GlobalInvocationID.y - 1)).r,
+	// 	imageLoad(OUTPUT_TEXTURE, ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y - 1)).r,
+	// 	imageLoad(OUTPUT_TEXTURE, ivec2(gl_GlobalInvocationID.x + 1, gl_GlobalInvocationID.y - 1)).r,
+	// 	imageLoad(OUTPUT_TEXTURE, ivec2(gl_GlobalInvocationID.x - 1, gl_GlobalInvocationID.y)).r,
+	// 	imageLoad(OUTPUT_TEXTURE, ivec2(gl_GlobalInvocationID.x + 1, gl_GlobalInvocationID.y)).r,
+	// 	imageLoad(OUTPUT_TEXTURE, ivec2(gl_GlobalInvocationID.x - 1, gl_GlobalInvocationID.y + 1)).r,
+	// 	imageLoad(OUTPUT_TEXTURE, ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y + 1)).r,
+	// 	imageLoad(OUTPUT_TEXTURE, ivec2(gl_GlobalInvocationID.x + 1, gl_GlobalInvocationID.y + 1)).r
+	// };
 	vec4 color = imageLoad(OUTPUT_TEXTURE, texel);
 	memoryBarrier();
 	barrier();

@@ -3,6 +3,8 @@ extends Node2D
 # and fast results. rather than using a single buffer (wrong simulation and some limitations)
 # or two buffers with texture copy on CPU.
 # set active buffer in push constant and set the RID in process loop
+# single buffer that was used was pretty accurate even with boundary warping but sometimes things would vanish
+# this method doesnt seem to have any problem
 var rd : RenderingDevice
 var shader : RID
 var texture0 : RID
@@ -17,6 +19,8 @@ const SIZE = 1024
 var test_pattern_1024 : Texture2D = load("res://goltest1024.png")
 var store_on_texture1 := false
 var paused := true
+var kernel_data : PackedFloat32Array
+var kernel_size : int
 
 func _ready():
 	init_rd()
@@ -56,17 +60,25 @@ func init_rd():
 	texture0 = rd.texture_create(texfmt, RDTextureView.new(), [image.get_data()])
 	texture1 = rd.texture_create(texfmt, RDTextureView.new(), [image.get_data()])
 	(simwindow.texture as Texture2DRD).texture_rd_rid = texture1
+	init_kernel()
 	push_constants = PackedFloat32Array([store_on_texture1, SIZE, 0.0, 0.0])
 	
+	var uniform_texture0 := RDUniform.new()
+	uniform_texture0.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
+	uniform_texture0.binding = 0
+	uniform_texture0.add_id(texture0)
 	var uniform_texture1 := RDUniform.new()
 	uniform_texture1.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
-	uniform_texture1.binding = 0
-	uniform_texture1.add_id(texture0)
-	var uniform_texture2 := RDUniform.new()
-	uniform_texture2.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
-	uniform_texture2.binding = 1
-	uniform_texture2.add_id(texture1)
-	uniform_set = rd.uniform_set_create([uniform_texture1, uniform_texture2], shader, 0)
+	uniform_texture1.binding = 1
+	uniform_texture1.add_id(texture1)
+	var uniform_kernel := RDUniform.new()
+	uniform_kernel.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER
+	uniform_kernel.binding = 2
+	uniform_kernel.add_id(kernel)
+	uniform_set = rd.uniform_set_create([uniform_texture0,
+										uniform_texture1,
+										uniform_kernel],
+										shader, 0)
 	
 func process_rd():
 	var compute_list := rd.compute_list_begin()
@@ -81,3 +93,14 @@ func process_rd():
 
 func update_rd():
 	push_constants = PackedFloat32Array([store_on_texture1, SIZE, 0.0, 0.0])
+
+func init_kernel():
+	kernel_data = PackedFloat32Array([
+	1.0, 1.0, 1.0,
+	1.0, 0.0, 1.0,
+	1.0, 1.0, 1.0
+	])
+	kernel_size = int(sqrt(kernel_data.size()))
+	var temp_array := PackedInt32Array([kernel_size]).to_byte_array()
+	temp_array.append_array(kernel_data.to_byte_array())
+	kernel = rd.storage_buffer_create(temp_array.size(), temp_array)
