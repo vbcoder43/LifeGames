@@ -10,8 +10,8 @@ var uniform_set : RID
 var pipeline : RID
 
 @onready var simwindow : Sprite2D = $simwindow
-const SIZE = 1024
-var test_pattern_1024 : Texture2D = load("res://goltest1024.png")
+const SIZE = 512
+var test_pattern_1024 : Texture2D = load("res://Untitled-1.png")
 var store_on_texture1 := false
 var paused := true
 var kernel_data : PackedFloat32Array
@@ -87,9 +87,10 @@ func process_rd():
 	rd.compute_list_set_push_constant(compute_list, push_constants.to_byte_array(), push_constants.size()*4)
 	rd.compute_list_dispatch(compute_list, SIZE/8, SIZE/8, 1)
 	rd.compute_list_end()
-	rd.submit()
+	# not needed in godot 4.4?
+	#rd.submit()
 	# sync is needed cuz we switch between texture buffers
-	rd.sync()
+	#rd.sync()
 
 func update_rd():
 	frequency = $UI/freq.value
@@ -100,11 +101,22 @@ func update_rd():
 	push_constants = PackedFloat32Array([store_on_texture1, SIZE, frequency, l1, l2, l3, l4, 0.0])
 	
 func init_kernel():
-	kernel_data = PackedFloat32Array([ #default GoL kernel
-	1.0, 1.0, 1.0,
-	1.0, 0.0, 1.0,
-	1.0, 1.0, 1.0
-	])
+	#kernel_data = PackedFloat32Array([ #default GoL kernel
+	#1.0, 1.0, 1.0,
+	#1.0, 0.0, 1.0,
+	#1.0, 1.0, 1.0
+	#])
+	kernel_data = PackedFloat32Array([0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, #Ring kernel
+									  0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0,
+									  0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+									  0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+									  1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1,
+									  1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1,
+									  1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1,
+									  0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+									  0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+									  0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0,
+									  0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0])
 	kernel_size = int(sqrt(kernel_data.size()))
 	var temp_array := PackedInt32Array([kernel_size]).to_byte_array()
 	temp_array.append_array(kernel_data.to_byte_array())

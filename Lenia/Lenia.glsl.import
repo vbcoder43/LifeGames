@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://dh54np3s5twrh"
+path="res://.godot/imported/Lenia.glsl-a7fdc87ff8b3d751f1ca44d113bcb0c4.res"
+
+[deps]
+
+source_file="res://Lenia/Lenia.glsl"
+dest_files=["res://.godot/imported/Lenia.glsl-a7fdc87ff8b3d751f1ca44d113bcb0c4.res"]
+
+[params]
+

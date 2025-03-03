@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://kfbc1gf5vd8"]
 
-[ext_resource type="Script" path="res://GoL_smooth/gol_smooth.gd" id="1_55wun"]
+[ext_resource type="Script" uid="uid://wnjr3sag5rm6" path="res://GoL_smooth/gol_smooth.gd" id="1_55wun"]
 
 [sub_resource type="Texture2DRD" id="Texture2DRD_3moai"]
 

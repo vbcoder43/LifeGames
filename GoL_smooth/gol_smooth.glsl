@@ -45,8 +45,8 @@ void main() {
 	if(bool(params.store_on_texture1)) color = imageLoad(texture0, texel);
 	// growth based simulation
 	color.rgb = vec3(clamp(color.r + (growth(sum) * params.frequency), 0.0, 1.0),
-					clamp(growth(sum) * (gl_GlobalInvocationID.x/params.grid_size), 0.0, 1.0),
-					clamp(growth(sum) * (gl_GlobalInvocationID.y/params.grid_size), 0.0, 1.0));
+					clamp(color.g + growth(sum) * params.frequency, 0.0, 1.0),
+					clamp(color.b + growth(sum) * params.frequency, 0.0, 1.0));
 	if(bool(params.store_on_texture1)) imageStore(texture1, texel, color);
 	else imageStore(texture0, texel, color);
 }
@@ -54,6 +54,5 @@ void main() {
 float growth(float val) {
 	// default GoL states, binary.
 	// return float(val>=2.9 && val<=3.1) - float(val<2.0 || val>3.0);
-	
-	return float(val>=params.l1 && val<=params.l2) - float(val<=params.l3 || val>=params.l4);
+	return float(val>=params.l1 && val<=params.l2) - float(val<params.l3 || val>params.l4);
 }

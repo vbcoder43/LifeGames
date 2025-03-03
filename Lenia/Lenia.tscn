@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://odkhw1woml17"]
+
+[ext_resource type="Script" uid="uid://bkcc78vw8djjg" path="res://Lenia/Lenia.gd" id="1_ywlsp"]
+
+[sub_resource type="Texture2DRD" id="Texture2DRD_y8mdt"]
+
+[sub_resource type="Texture2DRD" id="Texture2DRD_v85dj"]
+
+[node name="Lenia" type="Node2D"]
+script = ExtResource("1_ywlsp")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="lblFPS" type="Label" parent="UI"]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "FPS:"
+
+[node name="SimWindow" type="Sprite2D" parent="."]
+position = Vector2(576, 0)
+texture = SubResource("Texture2DRD_y8mdt")
+centered = false
+
+[node name="KernelWindow" type="Sprite2D" parent="."]
+position = Vector2(1088, 512)
+texture = SubResource("Texture2DRD_v85dj")
+centered = false

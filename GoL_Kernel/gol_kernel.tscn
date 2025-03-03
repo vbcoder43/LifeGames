@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://1xs8um1d5sbu"]
 
-[ext_resource type="Script" path="res://GoL_Kernel/gol_kernel.gd" id="1_01aag"]
+[ext_resource type="Script" uid="uid://c07x38omh4cdr" path="res://GoL_Kernel/gol_kernel.gd" id="1_01aag"]
 
 [sub_resource type="Texture2DRD" id="Texture2DRD_3moai"]
 
